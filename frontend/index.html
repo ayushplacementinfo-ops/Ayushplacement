@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ayush Placement & Services - Best Recruitment Agency</title>
-  <meta name="description" content="Leading placement agency in India. Find jobs in Pharma, IT, Finance, Engineering. Register for free!">
-  <meta name="keywords" content="placement agency, recruitment, jobs India, walk-in interviews, job consultancy, Ayush Placement">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>Ayush Placement & Services - Best Recruitment Agency in India</title>
+  <meta name="description" content="Ayush Placement & Services - Leading placement agency since 2010. Find jobs in Pharma, IT, Finance, Engineering. Register as a candidate or post jobs as an employer.">
+  <meta name="keywords" content="placement agency, recruitment, jobs in Mumbai, jobs in Pharma, walk-in interviews, job consultancy, Ayush Placement, career opportunities, India jobs, job portal, free job posting">
+  <!-- Google Fonts & Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
@@ -16,22 +17,17 @@
       font-family: 'Inter', sans-serif;
     }
 
-    :root {
-      --primary: #1e3a5f;
-      --secondary: #f59e0b;
-      --dark: #0f172a;
-      --light: #f8fafc;
-    }
-
     body {
-      background: var(--light);
-      color: var(--dark);
+      background: #f5f7fa;
+      color: #1e293b;
     }
 
+    /* Header */
     .header {
-      background: linear-gradient(135deg, var(--primary), var(--dark));
+      background: linear-gradient(135deg, #0f172a, #1e3a5f);
       color: white;
       padding: 1rem 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
       position: sticky;
       top: 0;
       z-index: 1000;
@@ -45,121 +41,90 @@
       gap: 20px;
     }
 
-    .logo {
+    .brand {
       display: flex;
       align-items: center;
       gap: 15px;
     }
 
-    .logo-icon {
-      width: 50px;
-      height: 50px;
-      background: var(--secondary);
+    .logo-img {
+      width: 55px;
+      height: 55px;
+      background: #f59e0b;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: 28px;
+      color: #0f172a;
     }
 
-    .logo h1 { font-size: 1.3rem; }
-    .logo p { font-size: 0.7rem; opacity: 0.9; }
+    .site-title h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
 
-    .nav {
-      margin-top: 1rem;
+    .site-title p {
+      font-size: 0.75rem;
+      opacity: 0.9;
+    }
+
+    .header-right {
       display: flex;
-      gap: 2rem;
-      flex-wrap: wrap;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      padding-top: 1rem;
+      align-items: center;
+      gap: 20px;
     }
 
-    .nav a {
-      color: white;
-      text-decoration: none;
-      cursor: pointer;
+    .contact-info {
+      text-align: right;
+      font-size: 0.85rem;
     }
 
-    .btn {
+    .login-btn {
+      background: #f59e0b;
+      color: #0f172a;
       padding: 10px 24px;
       border-radius: 40px;
       border: none;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .btn-primary {
-      background: var(--secondary);
-      color: var(--dark);
+    .login-btn:hover {
+      background: #d97706;
+      transform: translateY(-2px);
     }
 
-    .btn-primary:hover { background: #d97706; transform: translateY(-2px); }
+    nav {
+      margin-top: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 25px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      padding-top: 15px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.2s;
+      cursor: pointer;
+    }
+
+    nav a:hover { opacity: 0.8; text-decoration: underline; }
 
     .container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 1rem;
+      max-width: 1300px;
+      margin: 30px auto;
+      padding: 0 20px;
     }
 
-    .hero {
-      background: linear-gradient(135deg, var(--primary), var(--dark));
-      color: white;
-      padding: 3rem;
-      border-radius: 20px;
-      margin-bottom: 2rem;
-    }
-
-    .search-box {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    .search-box input, .search-box select {
-      flex: 1;
-      padding: 12px;
-      border-radius: 12px;
-      border: none;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .stat-card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 16px;
-      text-align: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-
-    .stat-number {
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--secondary);
-    }
-
-    .job-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 1.5rem;
-      margin-top: 1.5rem;
-    }
-
-    .job-card {
-      background: white;
-      border-radius: 16px;
-      padding: 1.5rem;
-      border-left: 4px solid var(--secondary);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-
+    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
@@ -168,41 +133,229 @@
       width: 100%;
       height: 100%;
       background: rgba(0,0,0,0.5);
+      z-index: 2000;
       justify-content: center;
       align-items: center;
-      z-index: 2000;
     }
 
     .modal-content {
       background: white;
-      border-radius: 20px;
-      padding: 2rem;
+      border-radius: 24px;
+      padding: 30px;
       max-width: 450px;
       width: 90%;
+      position: relative;
     }
 
-    .form-group {
-      margin-bottom: 1rem;
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 28px;
+      cursor: pointer;
+      color: #666;
     }
 
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ddd;
+    .role-selector {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .role-tab {
+      flex: 1;
+      padding: 10px;
+      background: #e2e8f0;
+      border: none;
       border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .role-tab.active {
+      background: #1e3a5f;
+      color: white;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      background: #1e3a5f;
+      color: white;
+      padding: 10px 24px;
+      border-radius: 40px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .btn-primary {
+      background: #f59e0b;
+      color: #0f172a;
+    }
+
+    .btn-primary:hover {
+      background: #d97706;
+    }
+
+    .stats-grid {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #1e3a5f, #0f172a);
+      color: white;
+      padding: 25px;
+      border-radius: 20px;
+      flex: 1;
+      min-width: 180px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #f59e0b;
+    }
+
+    .search-section {
+      background: linear-gradient(135deg, #1e3a5f, #0f172a);
+      color: white;
+      padding: 40px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-box input, .search-box select {
+      flex: 1;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .job-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 24px;
+      margin-top: 20px;
+    }
+
+    .job-card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      border-left: 5px solid #f59e0b;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: all 0.2s;
+    }
+
+    .job-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .job-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1e3a5f;
+      margin-bottom: 8px;
+    }
+
+    .company {
+      color: #f59e0b;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .job-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 12px 0;
+      font-size: 0.85rem;
+    }
+
+    .job-details span {
+      background: #f1f5f9;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .industry-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .industry-card {
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .industry-card:hover {
+      background: #1e3a5f;
+      color: white;
+      transform: translateY(-3px);
+    }
+
+    .industry-card i {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #f59e0b;
+    }
+
+    .client-logos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .client-item {
+      background: #f1f5f9;
+      padding: 10px 25px;
+      border-radius: 40px;
+      font-weight: 500;
     }
 
     footer {
-      background: var(--dark);
+      background: #0f172a;
       color: #94a3b8;
-      padding: 2rem;
+      padding: 40px;
       text-align: center;
-      margin-top: 3rem;
+      margin-top: 50px;
     }
 
     @media (max-width: 768px) {
       .header-top { flex-direction: column; text-align: center; }
-      .hero { padding: 1.5rem; }
+      .header-right { flex-direction: column; }
+      .search-box { flex-direction: column; }
+      .job-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -210,340 +363,466 @@
 
 <div class="header">
   <div class="header-top">
-    <div class="logo">
-      <div class="logo-icon"><i class="fas fa-briefcase"></i></div>
-      <div>
+    <div class="brand">
+      <div class="logo-img"><i class="fas fa-briefcase"></i></div>
+      <div class="site-title">
         <h1>Ayush Placement & Services</h1>
         <p>Your Trusted Career Partner Since 2010</p>
       </div>
     </div>
-    <div>
-      <button class="btn btn-primary" onclick="showLoginModal()">
+    <div class="header-right">
+      <div class="contact-info">
+        <div><i class="fas fa-phone"></i> 9356099943</div>
+        <div><i class="fas fa-envelope"></i> ayushplacementinfo@gmail.com</div>
+      </div>
+      <button class="login-btn" onclick="openLoginModal()">
         <i class="fas fa-user"></i> Login / Register
       </button>
     </div>
   </div>
-  <div class="nav">
-    <a onclick="loadPage('home')">Home</a>
-    <a onclick="loadPage('jobs')">Browse Jobs</a>
-    <a onclick="loadPage('postJob')">Post Job</a>
-    <a onclick="loadPage('dashboard')">Dashboard</a>
-    <a onclick="loadPage('contact')">Contact</a>
-  </div>
+  <nav>
+    <a onclick="showPage('home')">Home</a>
+    <a onclick="showPage('jobs')">Browse Jobs</a>
+    <a onclick="showPage('employer')">Post Job (Employer)</a>
+    <a onclick="showPage('candidate')">For Candidates</a>
+    <a onclick="showPage('contact')">Contact Us</a>
+  </nav>
 </div>
 
-<div class="container" id="app"></div>
-
-<footer>
-  <p>© 2025 Ayush Placement & Services | All Rights Reserved</p>
-  <p>📍 Mumbai | Delhi | Bengaluru | Pune | Chennai | Hyderabad</p>
-</footer>
-
-<script>
-const API_URL = window.location.origin + '/api';
-let currentUser = null;
-let currentPage = 'home';
-
-// Helper functions
-function showLoginModal() {
-  document.getElementById('loginModal').style.display = 'flex';
-}
-
-function hideLoginModal() {
-  document.getElementById('loginModal').style.display = 'none';
-}
-
-function showRegisterModal() {
-  hideLoginModal();
-  document.getElementById('registerModal').style.display = 'flex';
-}
-
-function hideRegisterModal() {
-  document.getElementById('registerModal').style.display = 'none';
-}
-
-// API calls
-async function apiCall(endpoint, options = {}) {
-  const token = localStorage.getItem('token');
-  const headers = {
-    'Content-Type': 'application/json',
-    ...options.headers
-  };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    ...options,
-    headers
-  });
-  
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error || 'API Error');
-  return data;
-}
-
-async function login() {
-  const email = document.getElementById('loginEmail').value;
-  const password = document.getElementById('loginPassword').value;
-  
-  try {
-    const data = await apiCall('/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password })
-    });
-    localStorage.setItem('token', data.token);
-    currentUser = data.user;
-    hideLoginModal();
-    loadPage(currentPage);
-    alert('Login successful!');
-  } catch (error) {
-    alert('Login failed: ' + error.message);
-  }
-}
-
-async function register() {
-  const userData = {
-    name: document.getElementById('regName').value,
-    email: document.getElementById('regEmail').value,
-    password: document.getElementById('regPassword').value,
-    phone: document.getElementById('regPhone').value,
-    role: document.getElementById('regRole').value
-  };
-  
-  try {
-    await apiCall('/register', {
-      method: 'POST',
-      body: JSON.stringify(userData)
-    });
-    hideRegisterModal();
-    alert('Registration successful! Please login.');
-  } catch (error) {
-    alert('Registration failed: ' + error.message);
-  }
-}
-
-async function logout() {
-  localStorage.removeItem('token');
-  currentUser = null;
-  loadPage('home');
-  alert('Logged out successfully');
-}
-
-async function loadPage(page) {
-  currentPage = page;
-  const app = document.getElementById('app');
-  
-  if (page === 'home') {
-    const jobs = await apiCall('/jobs?limit=6');
-    app.innerHTML = `
-      <div class="hero">
-        <h2>Find Your Dream Job</h2>
-        <p>Search from 1000+ opportunities across India</p>
-        <div class="search-box">
-          <input type="text" id="searchKeyword" placeholder="Job title, company">
-          <input type="text" id="searchLocation" placeholder="Location">
-          <button class="btn btn-primary" onclick="searchJobs()">Search Jobs</button>
-        </div>
-      </div>
-      <div class="stats">
-        <div class="stat-card"><div class="stat-number">1000+</div><div>Job Openings</div></div>
-        <div class="stat-card"><div class="stat-number">5000+</div><div>Companies</div></div>
-        <div class="stat-card"><div class="stat-number">2 Lakh+</div><div>Candidates</div></div>
-        <div class="stat-card"><div class="stat-number">15000+</div><div>Placements</div></div>
-      </div>
-      <h3>Latest Job Openings</h3>
-      <div class="job-grid" id="jobsList"></div>
-    `;
-    displayJobs(jobs);
-  } else if (page === 'jobs') {
-    const jobs = await apiCall('/jobs');
-    app.innerHTML = `
-      <h3>All Jobs</h3>
-      <div class="search-box">
-        <input type="text" id="searchKeyword" placeholder="Search jobs">
-        <input type="text" id="searchLocation" placeholder="Location">
-        <button class="btn btn-primary" onclick="searchJobs()">Search</button>
-      </div>
-      <div class="job-grid" id="jobsList"></div>
-    `;
-    displayJobs(jobs);
-  } else if (page === 'postJob') {
-    if (!currentUser || (currentUser.role !== 'employer' && currentUser.role !== 'admin')) {
-      app.innerHTML = `<div class="hero"><h3>Please login as Employer to post jobs</h3><button class="btn btn-primary" onclick="showLoginModal()">Login</button></div>`;
-      return;
-    }
-    app.innerHTML = `
-      <div class="hero">
-        <h3>Post a New Job Opening</h3>
-        <form id="postJobForm">
-          <div class="form-group"><input type="text" id="title" placeholder="Job Title" required></div>
-          <div class="form-group"><input type="text" id="company" placeholder="Company Name" required></div>
-          <div class="form-group"><input type="text" id="location" placeholder="Location" required></div>
-          <div class="form-group">
-            <select id="type">
-              <option>Full-time</option><option>Part-time</option><option>Remote</option><option>Contract</option><option>Walk-in</option>
-            </select>
-          </div>
-          <div class="form-group"><input type="text" id="salary" placeholder="Salary Range"></div>
-          <div class="form-group"><input type="text" id="experience" placeholder="Experience Required"></div>
-          <div class="form-group"><textarea id="description" placeholder="Job Description" rows="4" required></textarea></div>
-          <button type="submit" class="btn btn-primary">Post Job</button>
-        </form>
-      </div>
-    `;
-    document.getElementById('postJobForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const jobData = {
-        title: document.getElementById('title').value,
-        company: document.getElementById('company').value,
-        location: document.getElementById('location').value,
-        type: document.getElementById('type').value,
-        salary: document.getElementById('salary').value,
-        experience: document.getElementById('experience').value,
-        description: document.getElementById('description').value
-      };
-      await apiCall('/jobs', { method: 'POST', body: JSON.stringify(jobData) });
-      alert('Job posted successfully!');
-      loadPage('jobs');
-    });
-  } else if (page === 'dashboard') {
-    if (!currentUser) {
-      app.innerHTML = `<div class="hero"><h3>Please login to view dashboard</h3><button class="btn btn-primary" onclick="showLoginModal()">Login</button></div>`;
-      return;
-    }
-    if (currentUser.role === 'candidate') {
-      const applications = await apiCall('/applications/my');
-      app.innerHTML = `
-        <h3>My Applications</h3>
-        <div id="applicationsList"></div>
-        <button class="btn btn-primary" onclick="logout()" style="margin-top: 1rem;">Logout</button>
-      `;
-      const container = document.getElementById('applicationsList');
-      if (applications.length === 0) {
-        container.innerHTML = '<p>No applications yet.</p>';
-      } else {
-        container.innerHTML = applications.map(app => `
-          <div class="job-card">
-            <h4>${app.jobId?.title || 'Job'}</h4>
-            <p>Status: ${app.status} | Applied: ${new Date(app.appliedDate).toLocaleDateString()}</p>
-          </div>
-        `).join('');
-      }
-    } else {
-      app.innerHTML = `
-        <div class="hero">
-          <h3>Employer Dashboard</h3>
-          <button class="btn btn-primary" onclick="logout()">Logout</button>
-        </div>
-      `;
-    }
-  } else if (page === 'contact') {
-    app.innerHTML = `
-      <div class="hero">
-        <h3>Contact Us</h3>
-        <p><i class="fas fa-phone"></i> <strong>Phone:</strong> 9356099943</p>
-        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> ayushplacementinfo@gmail.com</p>
-        <p><i class="fas fa-map-marker"></i> <strong>Address:</strong> Mumbai, Maharashtra, India</p>
-        <p><i class="fas fa-clock"></i> <strong>Hours:</strong> Mon-Sat, 10 AM - 7 PM</p>
-      </div>
-    `;
-  }
-}
-
-async function searchJobs() {
-  const keyword = document.getElementById('searchKeyword')?.value || '';
-  const location = document.getElementById('searchLocation')?.value || '';
-  const jobs = await apiCall(`/jobs?search=${keyword}&location=${location}`);
-  displayJobs(jobs);
-}
-
-function displayJobs(jobs) {
-  const container = document.getElementById('jobsList');
-  if (!container) return;
-  
-  if (jobs.length === 0) {
-    container.innerHTML = '<p>No jobs found.</p>';
-    return;
-  }
-  
-  container.innerHTML = jobs.map(job => `
-    <div class="job-card">
-      <h3>${job.title}</h3>
-      <p><strong>${job.company}</strong></p>
-      <p><i class="fas fa-map-marker"></i> ${job.location}</p>
-      <p><i class="fas fa-briefcase"></i> ${job.type} | ${job.experience || 'Exp: N/A'}</p>
-      <p>💰 ${job.salary || 'Salary: Negotiable'}</p>
-      <button class="btn btn-primary" onclick="applyForJob('${job._id}')">Apply Now</button>
-    </div>
-  `).join('');
-}
-
-async function applyForJob(jobId) {
-  if (!currentUser) {
-    showLoginModal();
-    return;
-  }
-  if (currentUser.role !== 'candidate') {
-    alert('Only candidates can apply for jobs');
-    return;
-  }
-  
-  try {
-    await apiCall('/applications', {
-      method: 'POST',
-      body: JSON.stringify({ jobId })
-    });
-    alert('Application submitted successfully!');
-  } catch (error) {
-    alert('Failed to apply: ' + error.message);
-  }
-}
-
-// Check for existing token on load
-async function init() {
-  const token = localStorage.getItem('token');
-  if (token) {
-    try {
-      // Verify token by fetching user info (you can add a /me endpoint)
-      currentUser = { role: 'candidate' }; // Simplified
-    } catch (e) {
-      localStorage.removeItem('token');
-    }
-  }
-  loadPage('home');
-}
-
-init();
-</script>
-
 <!-- Login Modal -->
-<div id="loginModal" class="modal" style="display:none">
+<div id="loginModal" class="modal">
   <div class="modal-content">
-    <h3>Login to Your Account</h3>
-    <div class="form-group"><input type="email" id="loginEmail" placeholder="Email" required></div>
-    <div class="form-group"><input type="password" id="loginPassword" placeholder="Password" required></div>
-    <button class="btn btn-primary" onclick="login()" style="width:100%">Login</button>
-    <p style="margin-top:1rem; text-align:center">New user? <a href="#" onclick="showRegisterModal()">Register here</a></p>
-    <button onclick="hideLoginModal()" style="margin-top:0.5rem">Cancel</button>
+    <span class="close-modal" onclick="closeLoginModal()">&times;</span>
+    <h3 style="margin-bottom: 20px;">Access Your Account</h3>
+    <div class="role-selector">
+      <button class="role-tab active" data-role="candidate">Candidate</button>
+      <button class="role-tab" data-role="employer">Employer</button>
+      <button class="role-tab" data-role="admin">Admin</button>
+    </div>
+    <input type="email" id="modalEmail" placeholder="Email Address" style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #ddd; border-radius:12px;">
+    <input type="password" id="modalPassword" placeholder="Password" style="width:100%; padding:12px; margin-bottom:20px; border:1px solid #ddd; border-radius:12px;">
+    <button class="btn" style="width:100%;" onclick="processLogin()">Login</button>
+    <p style="margin-top:15px; font-size:0.8rem; text-align:center;">New user? <a href="#" onclick="showRegister()">Register here</a></p>
   </div>
 </div>
 
 <!-- Register Modal -->
-<div id="registerModal" class="modal" style="display:none">
+<div id="registerModal" class="modal">
   <div class="modal-content">
-    <h3>Create New Account</h3>
-    <div class="form-group">
-      <select id="regRole">
-        <option value="candidate">Candidate</option>
-        <option value="employer">Employer</option>
-      </select>
-    </div>
-    <div class="form-group"><input type="text" id="regName" placeholder="Full Name" required></div>
-    <div class="form-group"><input type="email" id="regEmail" placeholder="Email" required></div>
-    <div class="form-group"><input type="password" id="regPassword" placeholder="Password" required></div>
-    <div class="form-group"><input type="tel" id="regPhone" placeholder="Phone Number"></div>
-    <button class="btn btn-primary" onclick="register()" style="width:100%">Register</button>
-    <button onclick="hideRegisterModal()" style="margin-top:0.5rem">Cancel</button>
+    <span class="close-modal" onclick="closeRegisterModal()">&times;</span>
+    <h3 style="margin-bottom: 20px;">Create New Account</h3>
+    <select id="regRole" style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #ddd; border-radius:12px;">
+      <option value="candidate">Candidate</option>
+      <option value="employer">Employer</option>
+    </select>
+    <input type="text" id="regName" placeholder="Full Name" style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #ddd; border-radius:12px;">
+    <input type="email" id="regEmail" placeholder="Email Address" style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #ddd; border-radius:12px;">
+    <input type="password" id="regPassword" placeholder="Password" style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #ddd; border-radius:12px;">
+    <input type="text" id="regPhone" placeholder="Phone Number" style="width:100%; padding:12px; margin-bottom:20px; border:1px solid #ddd; border-radius:12px;">
+    <button class="btn" style="width:100%;" onclick="processRegister()">Register</button>
   </div>
 </div>
+
+<div class="container">
+  <div id="pageContent"></div>
+</div>
+
+<footer>
+  <p><strong>Ayush Placement & Services</strong> | Leading Placement Agency | PAN India Recruitment</p>
+  <p>📍 Offices: Mumbai | Delhi | Bengaluru | Pune | Chennai | Hyderabad</p>
+  <p>© 2025 All Rights Reserved | Trusted by 5000+ Companies</p>
+</footer>
+
+<script>
+  // Database
+  let appData = {
+    jobs: [],
+    employers: [],
+    candidates: [],
+    applications: [],
+    currentUser: null,
+    adminSettings: {
+      websiteName: "Ayush Placement & Services",
+      contactNumber: "9356099943",
+      contactEmail: "ayushplacementinfo@gmail.com",
+      address: "Mumbai, India"
+    }
+  };
+
+  function loadData() {
+    const stored = localStorage.getItem("ayushDB");
+    if(stored) {
+      appData = JSON.parse(stored);
+    } else {
+      // Seed jobs data
+      appData.jobs = [
+        { id: "1", title: "QA Chemist / Officer", company: "Pharma Ltd", location: "Palghar", type: "Walk-in", salary: "1-5 Lakhs", experience: "1-4 Years", description: "Looking for experienced QA Chemist for pharmaceutical company. Male candidates preferred.", postedBy: "admin", date: "2026-04-03" },
+        { id: "2", title: "QC-HPLC Officer", company: "Biotech Corp", location: "Palghar MIDC", type: "Full-time", salary: "3-4 Lakhs", experience: "1-3 Years", description: "HPLC/lab instrument experience required. Must have knowledge of all QC activities.", postedBy: "admin", date: "2026-04-03" },
+        { id: "3", title: "Microbiologist", company: "Bioscience Ltd", location: "Boisar", type: "Full-time", salary: "2-4 Lakhs", experience: "0-2 Years", description: "Perform microbiological analysis, environmental monitoring, GMP knowledge required.", postedBy: "admin", date: "2026-04-01" },
+        { id: "4", title: "Mechanical Engineer", company: "Injactble Plant", location: "Palghar", type: "Full-time", salary: "2-5 Lakhs", experience: "3-4 Years", description: "BE/B.TECH Mechanical background for maintenance department.", postedBy: "admin", date: "2026-03-28" },
+        { id: "5", title: "Electrical Engineer", company: "API Plant", location: "Boisar", type: "Full-time", salary: "2-3 Lakhs", experience: "1-4 Years", description: "Pharma background must for electrical engineering position.", postedBy: "admin", date: "2026-03-25" },
+        { id: "6", title: "Production Officer", company: "MNC Pharma", location: "Boisar", type: "Full-time", salary: "3-5 Lakhs", experience: "2-5 Years", description: "Tablet production experience required. MNC group company.", postedBy: "admin", date: "2026-03-20" }
+      ];
+      appData.employers = [];
+      appData.candidates = [];
+      appData.applications = [];
+      saveData();
+    }
+  }
+
+  function saveData() {
+    localStorage.setItem("ayushDB", JSON.stringify(appData));
+  }
+
+  let activePage = "home";
+
+  function showPage(page) {
+    activePage = page;
+    renderPage();
+  }
+
+  function renderPage() {
+    const container = document.getElementById("pageContent");
+    if(activePage === "home") container.innerHTML = renderHome();
+    else if(activePage === "jobs") container.innerHTML = renderJobs();
+    else if(activePage === "employer") container.innerHTML = renderEmployerSection();
+    else if(activePage === "candidate") container.innerHTML = renderCandidateSection();
+    else if(activePage === "contact") container.innerHTML = renderContact();
+  }
+
+  function renderHome() {
+    return `
+      <div class="search-section">
+        <h2><i class="fas fa-search"></i> Find Your Dream Job</h2>
+        <p>Search from 1000+ opportunities across India</p>
+        <div class="search-box">
+          <input type="text" id="searchKeyword" placeholder="Job Title, Skills, Company">
+          <input type="text" id="searchLocation" placeholder="Location">
+          <select id="searchType">
+            <option value="">All Job Types</option>
+            <option>Full-time</option>
+            <option>Walk-in</option>
+            <option>Remote</option>
+            <option>Contract</option>
+          </select>
+          <button class="btn btn-primary" onclick="searchJobs()"><i class="fas fa-search"></i> Search Jobs</button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-number">1000+</div><div>Job Openings</div></div>
+        <div class="stat-card"><div class="stat-number">5000+</div><div>Companies</div></div>
+        <div class="stat-card"><div class="stat-number">2 Lakh+</div><div>Registered Candidates</div></div>
+        <div class="stat-card"><div class="stat-number">15000+</div><div>Placements</div></div>
+      </div>
+
+      <div class="card">
+        <h3><i class="fas fa-fire"></i> Latest Job Openings</h3>
+        <div id="homeJobs" class="job-grid"></div>
+      </div>
+
+      <div class="card">
+        <h3><i class="fas fa-chart-line"></i> Top Industries We Serve</h3>
+        <div class="industry-grid">
+          <div class="industry-card" onclick="searchByIndustry('Pharma')"><i class="fas fa-capsules"></i><div>Pharma / Biotech</div></div>
+          <div class="industry-card" onclick="searchByIndustry('Finance')"><i class="fas fa-chart-line"></i><div>Finance / Accounts</div></div>
+          <div class="industry-card" onclick="searchByIndustry('IT')"><i class="fas fa-code"></i><div>IT / Software</div></div>
+          <div class="industry-card" onclick="searchByIndustry('Engineering')"><i class="fas fa-industry"></i><div>Engineering</div></div>
+          <div class="industry-card" onclick="searchByIndustry('Healthcare')"><i class="fas fa-hospital"></i><div>Healthcare</div></div>
+          <div class="industry-card" onclick="searchByIndustry('BPO')"><i class="fas fa-headset"></i><div>BPO / Customer Support</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><i class="fas fa-building"></i> Our Top Clients</h3>
+        <div class="client-logos">
+          <div class="client-item">Sun Pharma</div>
+          <div class="client-item">Cipla</div>
+          <div class="client-item">ICICI Bank</div>
+          <div class="client-item">L&T</div>
+          <div class="client-item">Infosys</div>
+          <div class="client-item">HDFC Ltd</div>
+          <div class="client-item">Tata Motors</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderJobs() {
+    return `
+      <div class="card">
+        <h3><i class="fas fa-search"></i> Browse All Jobs</h3>
+        <div class="search-box" style="margin-bottom: 20px;">
+          <input type="text" id="jobSearchKeyword" placeholder="Job Title">
+          <input type="text" id="jobSearchLocation" placeholder="Location">
+          <button class="btn" onclick="filterJobs()">Search</button>
+        </div>
+        <div id="allJobsList" class="job-grid"></div>
+      </div>
+    `;
+  }
+
+  function renderEmployerSection() {
+    if(!appData.currentUser || appData.currentUser.role !== 'employer') {
+      return `<div class="card"><h3>Employer Portal</h3><p>Please login as Employer to post jobs and manage listings.</p><button class="btn" onclick="openLoginModal()">Login as Employer</button></div>`;
+    }
+    return `
+      <div class="card">
+        <h3>Post New Job Opening</h3>
+        <form id="postJobForm">
+          <input type="text" id="jobTitle" placeholder="Job Title" required style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #ddd; border-radius:12px;">
+          <input type="text" id="jobCompany" placeholder="Company Name" required style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #ddd; border-radius:12px;">
+          <input type="text" id="jobLocation" placeholder="Location" required style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #ddd; border-radius:12px;">
+          <select id="jobType" style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #ddd; border-radius:12px;">
+            <option>Full-time</option><option>Walk-in</option><option>Remote</option><option>Contract</option>
+          </select>
+          <input type="text" id="jobSalary" placeholder="Salary Range" style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #ddd; border-radius:12px;">
+          <input type="text" id="jobExp" placeholder="Experience Required" style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #ddd; border-radius:12px;">
+          <textarea id="jobDesc" placeholder="Job Description" rows="3" style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #ddd; border-radius:12px;"></textarea>
+          <button type="submit" class="btn btn-primary">Post Job</button>
+        </form>
+      </div>
+      <div class="card">
+        <h3>Your Posted Jobs</h3>
+        <div id="employerJobs"></div>
+      </div>
+    `;
+  }
+
+  function renderCandidateSection() {
+    if(!appData.currentUser || appData.currentUser.role !== 'candidate') {
+      return `<div class="card"><h3>Candidate Portal</h3><p>Please login as Candidate to apply for jobs.</p><button class="btn" onclick="openLoginModal()">Login as Candidate</button></div>`;
+    }
+    const myApps = appData.applications.filter(a => a.candidateEmail === appData.currentUser.email);
+    return `
+      <div class="card">
+        <h3>My Applications</h3>
+        <div id="myApplications">${myApps.map(app => `<p>Applied for Job ID: ${app.jobId} on ${app.appliedDate} - Status: ${app.status}</p>`).join('') || "<p>No applications yet.</p>"}</div>
+      </div>
+      <div class="card">
+        <h3>Available Jobs</h3>
+        <div id="candidateJobs" class="job-grid"></div>
+      </div>
+    `;
+  }
+
+  function renderContact() {
+    return `
+      <div class="card">
+        <h3>Contact Us</h3>
+        <p><i class="fas fa-phone"></i> <strong>Phone:</strong> 9356099943</p>
+        <p><i class="fas fa-envelope"></i> <strong>Email:</strong> ayushplacementinfo@gmail.com</p>
+        <p><i class="fas fa-map-marker"></i> <strong>Address:</strong> Mumbai, Maharashtra, India</p>
+        <p><i class="fas fa-clock"></i> <strong>Office Hours:</strong> Monday-Saturday, 10:00 AM - 7:00 PM</p>
+      </div>
+    `;
+  }
+
+  window.searchJobs = function() {
+    const keyword = document.getElementById("searchKeyword")?.value.toLowerCase() || "";
+    const location = document.getElementById("searchLocation")?.value.toLowerCase() || "";
+    const type = document.getElementById("searchType")?.value || "";
+    let filtered = appData.jobs.filter(job => {
+      return (!keyword || job.title.toLowerCase().includes(keyword) || job.company.toLowerCase().includes(keyword)) &&
+             (!location || job.location.toLowerCase().includes(location)) &&
+             (!type || job.type === type);
+    });
+    displayJobs(filtered, "homeJobs");
+  };
+
+  window.filterJobs = function() {
+    const keyword = document.getElementById("jobSearchKeyword")?.value.toLowerCase() || "";
+    const location = document.getElementById("jobSearchLocation")?.value.toLowerCase() || "";
+    let filtered = appData.jobs.filter(job => {
+      return (!keyword || job.title.toLowerCase().includes(keyword) || job.company.toLowerCase().includes(keyword)) &&
+             (!location || job.location.toLowerCase().includes(location));
+    });
+    displayJobs(filtered, "allJobsList");
+  };
+
+  window.searchByIndustry = function(industry) {
+    showPage('jobs');
+    setTimeout(() => {
+      document.getElementById("jobSearchKeyword").value = industry;
+      filterJobs();
+    }, 100);
+  };
+
+  function displayJobs(jobs, containerId) {
+    const container = document.getElementById(containerId);
+    if(container) {
+      if(jobs.length === 0) {
+        container.innerHTML = "<p>No jobs found. Try different keywords.</p>";
+      } else {
+        container.innerHTML = jobs.map(job => `
+          <div class="job-card">
+            <div class="job-title">${job.title}</div>
+            <div class="company">${job.company}</div>
+            <div class="job-details">
+              <span><i class="fas fa-map-marker"></i> ${job.location}</span>
+              <span><i class="fas fa-briefcase"></i> ${job.experience}</span>
+              <span><i class="fas fa-rupee-sign"></i> ${job.salary}</span>
+              <span><i class="fas fa-clock"></i> ${job.type}</span>
+            </div>
+            <p style="margin: 10px 0; font-size:0.9rem;">${job.description.substring(0,100)}...</p>
+            ${appData.currentUser?.role === 'candidate' ? `<button class="btn" onclick="applyForJob('${job.id}')">Apply Now</button>` : '<small>Login as Candidate to apply</small>'}
+          </div>
+        `).join('');
+      }
+    }
+  }
+
+  window.applyForJob = function(jobId) {
+    if(!appData.currentUser || appData.currentUser.role !== 'candidate') {
+      alert("Please login as Candidate to apply.");
+      openLoginModal();
+      return;
+    }
+    const already = appData.applications.find(a => a.jobId === jobId && a.candidateEmail === appData.currentUser.email);
+    if(already) {
+      alert("You have already applied for this job!");
+      return;
+    }
+    appData.applications.push({
+      id: Date.now()+"",
+      jobId: jobId,
+      candidateEmail: appData.currentUser.email,
+      appliedDate: new Date().toISOString().slice(0,10),
+      status: "Pending Review"
+    });
+    saveData();
+    alert("Application submitted successfully!");
+    renderPage();
+  };
+
+  function openLoginModal() {
+    document.getElementById("loginModal").style.display = "flex";
+  }
+
+  function closeLoginModal() {
+    document.getElementById("loginModal").style.display = "none";
+  }
+
+  function closeRegisterModal() {
+    document.getElementById("registerModal").style.display = "none";
+  }
+
+  function showRegister() {
+    closeLoginModal();
+    document.getElementById("registerModal").style.display = "flex";
+  }
+
+  function processLogin() {
+    const email = document.getElementById("modalEmail").value;
+    const password = document.getElementById("modalPassword").value;
+    const role = document.querySelector(".role-tab.active").getAttribute("data-role");
+    
+    if(role === "admin" && email === "admin@ayush.com" && password === "admin123") {
+      appData.currentUser = { role: "admin", email: email, name: "Admin" };
+      saveData();
+      alert("Admin login successful!");
+      closeLoginModal();
+      renderPage();
+    } else if(role === "employer") {
+      const employer = appData.employers.find(e => e.email === email && e.password === password);
+      if(employer) {
+        appData.currentUser = { role: "employer", email: email, name: employer.name };
+        saveData();
+        alert("Employer login successful!");
+        closeLoginModal();
+        renderPage();
+      } else {
+        alert("Invalid credentials! New employer? Please register.");
+      }
+    } else if(role === "candidate") {
+      const candidate = appData.candidates.find(c => c.email === email && c.password === password);
+      if(candidate) {
+        appData.currentUser = { role: "candidate", email: email, name: candidate.name };
+        saveData();
+        alert("Candidate login successful!");
+        closeLoginModal();
+        renderPage();
+      } else {
+        alert("Invalid credentials! New candidate? Please register.");
+      }
+    }
+  }
+
+  function processRegister() {
+    const role = document.getElementById("regRole").value;
+    const name = document.getElementById("regName").value;
+    const email = document.getElementById("regEmail").value;
+    const password = document.getElementById("regPassword").value;
+    const phone = document.getElementById("regPhone").value;
+    
+    if(role === "candidate") {
+      if(appData.candidates.find(c => c.email === email)) {
+        alert("Email already registered!");
+        return;
+      }
+      appData.candidates.push({ id: Date.now()+"", name, email, password, phone });
+      alert("Registration successful! Please login.");
+    } else if(role === "employer") {
+      if(appData.employers.find(e => e.email === email)) {
+        alert("Email already registered!");
+        return;
+      }
+      appData.employers.push({ id: Date.now()+"", name, email, password, phone, company: "" });
+      alert("Registration successful! Please login.");
+    }
+    saveData();
+    closeRegisterModal();
+    openLoginModal();
+  }
+
+  // Post Job Form Handler
+  document.addEventListener("submit", function(e) {
+    if(e.target.id === "postJobForm") {
+      e.preventDefault();
+      if(!appData.currentUser || appData.currentUser.role !== 'employer') {
+        alert("Please login as employer");
+        return;
+      }
+      const newJob = {
+        id: Date.now()+"",
+        title: document.getElementById("jobTitle").value,
+        company: document.getElementById("jobCompany").value,
+        location: document.getElementById("jobLocation").value,
+        type: document.getElementById("jobType").value,
+        salary: document.getElementById("jobSalary").value,
+        experience: document.getElementById("jobExp").value,
+        description: document.getElementById("jobDesc").value,
+        postedBy: appData.currentUser.email,
+        date: new Date().toISOString().slice(0,10)
+      };
+      appData.jobs.push(newJob);
+      saveData();
+      alert("Job posted successfully!");
+      e.target.reset();
+      renderPage();
+    }
+  });
+
+  // Role tabs
+  document.querySelectorAll(".role-tab").forEach(tab => {
+    tab.addEventListener("click", function() {
+      document.querySelectorAll(".role-tab").forEach(t => t.classList.remove("active"));
+      this.classList.add("active");
+    });
+  });
+
+  // Initial load
+  loadData();
+  renderPage();
+  setInterval(() => {
+    if(document.getElementById("homeJobs")) searchJobs();
+    if(document.getElementById("allJobsList")) filterJobs();
+    if(document.getElementById("candidateJobs")) displayJobs(appData.jobs, "candidateJobs");
+    if(document.getElementById("employerJobs") && appData.currentUser?.role === 'employer') {
+      const myJobs = appData.jobs.filter(j => j.postedBy === appData.currentUser.email);
+      displayJobs(myJobs, "employerJobs");
+    }
+  }, 500);
+</script>
 </body>
 </html>
