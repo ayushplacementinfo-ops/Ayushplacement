@@ -4,6 +4,9 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 dotenv.config();
 
@@ -12,9 +15,43 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('frontend'));
 
-// MongoDB Connection (Clean version - no deprecated options)
+// Create uploads directory if it doesn't exist
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// Configure multer for resume upload
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'resume-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ['.pdf', '.doc', '.docx'];
+  const ext = path.extname(file.originalname).toLowerCase();
+  if (allowedTypes.includes(ext)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only PDF, DOC, DOCX files are allowed'), false);
+  }
+};
+
+const upload = multer({ 
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+});
+
+// MongoDB Connection
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
@@ -27,14 +64,70 @@ const connectDB = async () => {
 
 connectDB();
 
-// Models
-const UserSchema = new mongoose.Schema({
+// ============ ENHANCED CANDIDATE SCHEMA ============
+const CandidateSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ['candidate', 'employer', 'admin'], default: 'candidate' },
+  role: { type: String, default: 'candidate' },
+  
+  // Personal Details
+  dob: String,
   phone: String,
-  company: String,
+  alternatePhone: String,
+  gender: String,
+  maritalStatus: String,
+  
+  // Address Details
+  currentLocation: String,
+  permanentAddress: String,
+  city: String,
+  state: String,
+  pincode: String,
+  
+  // Professional Details
+  qualification: String,
+  totalExperience: String,
+  relevantExperience: String,
+  currentSalary: String,
+  expectedSalary: String,
+  noticePeriod: String,
+  currentCompany: String,
+  previousCompanies: String,
+  keySkills: String,
+  certification: String,
+  
+  // Resume
+  resumePath: String,
+  resumeOriginalName: String,
+  
+  // Additional Info
+  linkedinProfile: String,
+  portfolio: String,
+  languages: String,
+  
+  createdAt: { type: Date, default: Date.now }
+});
+
+const EmployerSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  role: { type: String, default: 'employer' },
+  companyName: String,
+  companyWebsite: String,
+  companySize: String,
+  industry: String,
+  phone: String,
+  designation: String,
+  createdAt: { type: Date, default: Date.now }
+});
+
+const AdminSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  role: { type: String, default: 'admin' },
   createdAt: { type: Date, default: Date.now }
 });
 
@@ -54,20 +147,21 @@ const JobSchema = new mongoose.Schema({
 
 const ApplicationSchema = new mongoose.Schema({
   jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'Job', required: true },
-  candidateId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  candidateId: { type: mongoose.Schema.Types.ObjectId, ref: 'Candidate', required: true },
   candidateName: String,
   candidateEmail: String,
-  resume: String,
   coverLetter: String,
   status: { type: String, enum: ['pending', 'reviewed', 'shortlisted', 'rejected'], default: 'pending' },
   appliedDate: { type: Date, default: Date.now }
 });
 
-const User = mongoose.model('User', UserSchema);
+const Candidate = mongoose.model('Candidate', CandidateSchema);
+const Employer = mongoose.model('Employer', EmployerSchema);
+const Admin = mongoose.model('Admin', AdminSchema);
 const Job = mongoose.model('Job', JobSchema);
 const Application = mongoose.model('Application', ApplicationSchema);
 
-// Middleware to verify JWT
+// ============ AUTH MIDDLEWARE ============
 const authMiddleware = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
@@ -83,48 +177,88 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-const adminMiddleware = async (req, res, next) => {
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({ error: 'Admin access required' });
-  }
-  next();
-};
-
-// ============ AUTH ROUTES ============
-
-// Register
-app.post('/api/register', async (req, res) => {
+// ============ CANDIDATE REGISTRATION WITH RESUME ============
+app.post('/api/candidate/register', upload.single('resume'), async (req, res) => {
   try {
-    const { name, email, password, role, phone, company } = req.body;
+    const { 
+      name, email, password, dob, phone, alternatePhone, gender, maritalStatus,
+      currentLocation, permanentAddress, city, state, pincode,
+      qualification, totalExperience, relevantExperience, currentSalary, 
+      expectedSalary, noticePeriod, currentCompany, previousCompanies,
+      keySkills, certification, linkedinProfile, portfolio, languages
+    } = req.body;
     
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
+    // Check if email already exists
+    const existingCandidate = await Candidate.findOne({ email });
+    if (existingCandidate) {
       return res.status(400).json({ error: 'Email already registered' });
     }
     
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({
-      name,
-      email,
-      password: hashedPassword,
-      role: role || 'candidate',
-      phone,
-      company
+    
+    const candidate = new Candidate({
+      name, email, password: hashedPassword,
+      dob, phone, alternatePhone, gender, maritalStatus,
+      currentLocation, permanentAddress, city, state, pincode,
+      qualification, totalExperience, relevantExperience, currentSalary,
+      expectedSalary, noticePeriod, currentCompany, previousCompanies,
+      keySkills, certification, linkedinProfile, portfolio, languages,
+      resumePath: req.file ? req.file.path : null,
+      resumeOriginalName: req.file ? req.file.originalname : null
     });
     
-    await user.save();
-    res.status(201).json({ message: 'User registered successfully' });
+    await candidate.save();
+    res.status(201).json({ message: 'Candidate registered successfully!' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============ EMPLOYER REGISTRATION ============
+app.post('/api/employer/register', async (req, res) => {
+  try {
+    const { name, email, password, companyName, companyWebsite, companySize, industry, phone, designation } = req.body;
+    
+    const existingEmployer = await Employer.findOne({ email });
+    if (existingEmployer) {
+      return res.status(400).json({ error: 'Email already registered' });
+    }
+    
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    const employer = new Employer({
+      name, email, password: hashedPassword,
+      companyName, companyWebsite, companySize, industry, phone, designation
+    });
+    
+    await employer.save();
+    res.status(201).json({ message: 'Employer registered successfully!' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// Login
+// ============ LOGIN (Working Fix) ============
 app.post('/api/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
     
-    const user = await User.findOne({ email });
+    let user = null;
+    let userModel = null;
+    
+    // Find user based on role
+    if (role === 'candidate') {
+      user = await Candidate.findOne({ email });
+      userModel = 'candidate';
+    } else if (role === 'employer') {
+      user = await Employer.findOne({ email });
+      userModel = 'employer';
+    } else if (role === 'admin') {
+      user = await Admin.findOne({ email });
+      userModel = 'admin';
+    }
+    
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
@@ -135,38 +269,41 @@ app.post('/api/login', async (req, res) => {
     }
     
     const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role },
+      { id: user._id, email: user.email, role: userModel },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
     
     res.json({
+      success: true,
       token,
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
+        role: userModel
       }
     });
   } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// Get current user
-app.get('/api/me', authMiddleware, async (req, res) => {
+// ============ GET CANDIDATE PROFILE ============
+app.get('/api/candidate/profile', authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
-    res.json(user);
+    if (req.user.role !== 'candidate') {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+    const candidate = await Candidate.findById(req.user.id).select('-password');
+    res.json(candidate);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 // ============ JOB ROUTES ============
-
-// Get all jobs (with filters)
 app.get('/api/jobs', async (req, res) => {
   try {
     const { search, location, type } = req.query;
@@ -192,31 +329,13 @@ app.get('/api/jobs', async (req, res) => {
   }
 });
 
-// Get single job
-app.get('/api/jobs/:id', async (req, res) => {
-  try {
-    const job = await Job.findById(req.params.id).populate('postedBy', 'name email company');
-    if (!job) {
-      return res.status(404).json({ error: 'Job not found' });
-    }
-    res.json(job);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Create job (employer or admin only)
 app.post('/api/jobs', authMiddleware, async (req, res) => {
   try {
     if (req.user.role !== 'employer' && req.user.role !== 'admin') {
       return res.status(403).json({ error: 'Only employers can post jobs' });
     }
     
-    const job = new Job({
-      ...req.body,
-      postedBy: req.user.id
-    });
-    
+    const job = new Job({ ...req.body, postedBy: req.user.id });
     await job.save();
     res.status(201).json(job);
   } catch (error) {
@@ -224,48 +343,7 @@ app.post('/api/jobs', authMiddleware, async (req, res) => {
   }
 });
 
-// Update job
-app.put('/api/jobs/:id', authMiddleware, async (req, res) => {
-  try {
-    const job = await Job.findById(req.params.id);
-    if (!job) {
-      return res.status(404).json({ error: 'Job not found' });
-    }
-    
-    if (job.postedBy.toString() !== req.user.id && req.user.role !== 'admin') {
-      return res.status(403).json({ error: 'Unauthorized' });
-    }
-    
-    Object.assign(job, req.body);
-    await job.save();
-    res.json(job);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Delete job
-app.delete('/api/jobs/:id', authMiddleware, async (req, res) => {
-  try {
-    const job = await Job.findById(req.params.id);
-    if (!job) {
-      return res.status(404).json({ error: 'Job not found' });
-    }
-    
-    if (job.postedBy.toString() !== req.user.id && req.user.role !== 'admin') {
-      return res.status(403).json({ error: 'Unauthorized' });
-    }
-    
-    await job.deleteOne();
-    res.json({ message: 'Job deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// ============ APPLICATION ROUTES ============
-
-// Apply for job
+// ============ APPLY FOR JOB ============
 app.post('/api/applications', authMiddleware, async (req, res) => {
   try {
     if (req.user.role !== 'candidate') {
@@ -281,13 +359,13 @@ app.post('/api/applications', authMiddleware, async (req, res) => {
       return res.status(400).json({ error: 'Already applied for this job' });
     }
     
-    const user = await User.findById(req.user.id);
+    const candidate = await Candidate.findById(req.user.id);
     
     const application = new Application({
       jobId: req.body.jobId,
       candidateId: req.user.id,
-      candidateName: user.name,
-      candidateEmail: user.email,
+      candidateName: candidate.name,
+      candidateEmail: candidate.email,
       coverLetter: req.body.coverLetter || ''
     });
     
@@ -298,7 +376,7 @@ app.post('/api/applications', authMiddleware, async (req, res) => {
   }
 });
 
-// Get my applications (candidate)
+// ============ GET MY APPLICATIONS ============
 app.get('/api/applications/my', authMiddleware, async (req, res) => {
   try {
     const applications = await Application.find({ candidateId: req.user.id })
@@ -310,51 +388,13 @@ app.get('/api/applications/my', authMiddleware, async (req, res) => {
   }
 });
 
-// Get applications for a job (employer)
-app.get('/api/applications/job/:jobId', authMiddleware, async (req, res) => {
+// ============ ADMIN LOGIN CHECK ============
+app.get('/api/admin/check', authMiddleware, async (req, res) => {
   try {
-    const job = await Job.findById(req.params.jobId);
-    if (!job) {
-      return res.status(404).json({ error: 'Job not found' });
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Admin access required' });
     }
-    
-    if (job.postedBy.toString() !== req.user.id && req.user.role !== 'admin') {
-      return res.status(403).json({ error: 'Unauthorized' });
-    }
-    
-    const applications = await Application.find({ jobId: req.params.jobId });
-    res.json(applications);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// ============ ADMIN ROUTES ============
-
-// Get stats
-app.get('/api/admin/stats', authMiddleware, adminMiddleware, async (req, res) => {
-  try {
-    const totalJobs = await Job.countDocuments();
-    const activeJobs = await Job.countDocuments({ status: 'active' });
-    const totalUsers = await User.countDocuments();
-    const totalApplications = await Application.countDocuments();
-    
-    res.json({
-      totalJobs,
-      activeJobs,
-      totalUsers,
-      totalApplications
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get all users
-app.get('/api/admin/users', authMiddleware, adminMiddleware, async (req, res) => {
-  try {
-    const users = await User.find().select('-password');
-    res.json(users);
+    res.json({ success: true, message: 'Admin authenticated' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -363,93 +403,36 @@ app.get('/api/admin/users', authMiddleware, adminMiddleware, async (req, res) =>
 // ============ CREATE DEFAULT ADMIN ============
 const createDefaultAdmin = async () => {
   try {
-    const adminExists = await User.findOne({ role: 'admin' });
+    const adminExists = await Admin.findOne({ email: 'admin@ayushplacement.com' });
     if (!adminExists) {
-      const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'Admin@123456', 10);
-      const admin = new User({
+      const hashedPassword = await bcrypt.hash('Admin@123', 10);
+      const admin = new Admin({
         name: 'Super Admin',
-        email: process.env.ADMIN_EMAIL || 'admin@ayushplacement.com',
+        email: 'admin@ayushplacement.com',
         password: hashedPassword,
-        role: 'admin',
-        phone: '9999999999'
+        role: 'admin'
       });
       await admin.save();
       console.log('✅ Default admin created');
-      console.log(`   Email: ${admin.email}`);
+      console.log('   Email: admin@ayushplacement.com');
+      console.log('   Password: Admin@123');
     }
   } catch (error) {
     console.log('⚠️ Admin creation skipped:', error.message);
   }
 };
 
-// ============ SEED INITIAL JOBS (if empty) ============
+// ============ SEED INITIAL JOBS ============
 const seedInitialJobs = async () => {
   try {
     const jobCount = await Job.countDocuments();
     if (jobCount === 0) {
       const sampleJobs = [
-        {
-          title: "QA Chemist / Officer",
-          company: "Pharma Ltd",
-          location: "Palghar",
-          type: "Walk-in",
-          salary: "1-5 Lakhs",
-          experience: "1-4 Years",
-          description: "Looking for experienced QA Chemist for pharmaceutical company. Male candidates preferred.",
-          status: "active"
-        },
-        {
-          title: "QC-HPLC Officer",
-          company: "Biotech Corp",
-          location: "Palghar MIDC",
-          type: "Full-time",
-          salary: "3-4 Lakhs",
-          experience: "1-3 Years",
-          description: "HPLC/lab instrument experience required. Must have knowledge of all QC activities.",
-          status: "active"
-        },
-        {
-          title: "Microbiologist",
-          company: "Bioscience Ltd",
-          location: "Boisar",
-          type: "Full-time",
-          salary: "2-4 Lakhs",
-          experience: "0-2 Years",
-          description: "Perform microbiological analysis, environmental monitoring, GMP knowledge required.",
-          status: "active"
-        },
-        {
-          title: "Mechanical Engineer",
-          company: "Injactble Plant",
-          location: "Palghar",
-          type: "Full-time",
-          salary: "2-5 Lakhs",
-          experience: "3-4 Years",
-          description: "BE/B.TECH Mechanical background for maintenance department.",
-          status: "active"
-        },
-        {
-          title: "Electrical Engineer",
-          company: "API Plant",
-          location: "Boisar",
-          type: "Full-time",
-          salary: "2-3 Lakhs",
-          experience: "1-4 Years",
-          description: "Pharma background must for electrical engineering position.",
-          status: "active"
-        },
-        {
-          title: "Production Officer",
-          company: "MNC Pharma",
-          location: "Boisar",
-          type: "Full-time",
-          salary: "3-5 Lakhs",
-          experience: "2-5 Years",
-          description: "Tablet production experience required. MNC group company.",
-          status: "active"
-        }
+        { title: "QA Chemist / Officer", company: "Pharma Ltd", location: "Palghar", type: "Walk-in", salary: "1-5 Lakhs", experience: "1-4 Years", description: "Looking for experienced QA Chemist for pharmaceutical company.", status: "active" },
+        { title: "QC-HPLC Officer", company: "Biotech Corp", location: "Palghar MIDC", type: "Full-time", salary: "3-4 Lakhs", experience: "1-3 Years", description: "HPLC/lab instrument experience required.", status: "active" },
+        { title: "Microbiologist", company: "Bioscience Ltd", location: "Boisar", type: "Full-time", salary: "2-4 Lakhs", experience: "0-2 Years", description: "Perform microbiological analysis, GMP knowledge required.", status: "active" },
+        { title: "Mechanical Engineer", company: "Injactble Plant", location: "Palghar", type: "Full-time", salary: "2-5 Lakhs", experience: "3-4 Years", description: "BE/B.TECH Mechanical background.", status: "active" }
       ];
-      
       await Job.insertMany(sampleJobs);
       console.log('✅ Sample jobs seeded to database');
     }
