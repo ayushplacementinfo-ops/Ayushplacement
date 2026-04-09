@@ -449,3 +449,128 @@ app.listen(PORT, async () => {
   await createDefaultAdmin();
   await seedInitialJobs();
 });
+// ============ GET CANDIDATE PROFILE (with all details) ============
+app.get('/api/candidate/profile', authMiddleware, async (req, res) => {
+  try {
+    if (req.user.role !== 'candidate') {
+      return res.status(403).json({ error: 'Access denied. Candidate only.' });
+    }
+    const candidate = await Candidate.findById(req.user.id).select('-password');
+    if (!candidate) {
+      return res.status(404).json({ error: 'Candidate not found' });
+    }
+    res.json(candidate);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============ UPDATE CANDIDATE PROFILE ============
+app.put('/api/candidate/profile', authMiddleware, upload.single('resume'), async (req, res) => {
+  try {
+    if (req.user.role !== 'candidate') {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+    
+    const updateData = { ...req.body };
+    
+    // If new resume uploaded
+    if (req.file) {
+      // Delete old resume if exists
+      const oldCandidate = await Candidate.findById(req.user.id);
+      if (oldCandidate && oldCandidate.resumePath) {
+        const oldResumePath = path.join(__dirname, oldCandidate.resumePath);
+        if (fs.existsSync(oldResumePath)) {
+          fs.unlinkSync(oldResumePath);
+        }
+      }
+      updateData.resumePath = req.file.path;
+      updateData.resumeOriginalName = req.file.originalname;
+    }
+    
+    const candidate = await Candidate.findByIdAndUpdate(
+      req.user.id,
+      updateData,
+      { new: true, runValidators: true }
+    ).select('-password');
+    
+    res.json({ message: 'Profile updated successfully!', candidate });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============ GET FULL CANDIDATE PROFILE FOR RECRUITER (Employer/Admin) ============
+app.get('/api/candidate/:id/complete', authMiddleware, async (req, res) => {
+  try {
+    // Only employers and admins can view full candidate profiles
+    if (req.user.role !== 'employer' && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Access denied. Only recruiters can view full profiles.' });
+    }
+    
+    const candidate = await Candidate.findById(req.params.id).select('-password');
+    if (!candidate) {
+      return res.status(404).json({ error: 'Candidate not found' });
+    }
+    
+    res.json(candidate);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============ GET ALL APPLICATIONS FOR EMPLOYER (with candidate details) ============
+app.get('/api/employer/applications', authMiddleware, async (req, res) => {
+  try {
+    if (req.user.role !== 'employer' && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+    
+    // Get all jobs posted by this employer
+    const jobs = await Job.find({ postedBy: req.user.id });
+    const jobIds = jobs.map(job => job._id);
+    
+    // Get all applications for those jobs
+    const applications = await Application.find({ jobId: { $in: jobIds } })
+      .populate('jobId')
+      .sort({ appliedDate: -1 });
+    
+    // Get candidate details for each application
+    const applicationsWithDetails = await Promise.all(applications.map(async (app) => {
+      const candidate = await Candidate.findById(app.candidateId).select('-password');
+      return {
+        ...app.toObject(),
+        candidateDetails: candidate
+      };
+    }));
+    
+    res.json(applicationsWithDetails);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============ UPDATE APPLICATION STATUS ============
+app.put('/api/applications/:id/status', authMiddleware, async (req, res) => {
+  try {
+    const { status } = req.body;
+    const application = await Application.findById(req.params.id);
+    
+    if (!application) {
+      return res.status(404).json({ error: 'Application not found' });
+    }
+    
+    // Check if employer owns the job
+    const job = await Job.findById(application.jobId);
+    if (job.postedBy.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    
+    application.status = status;
+    await application.save();
+    
+    res.json({ message: 'Application status updated', application });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
