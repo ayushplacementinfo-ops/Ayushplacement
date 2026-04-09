@@ -824,5 +824,115 @@
     }
   }, 500);
 </script>
+  <!-- Candidate Registration Modal with Complete Details -->
+<div id="candidateRegisterModal" class="modal" style="display:none">
+  <div class="modal-content" style="max-width: 800px; max-height: 80vh; overflow-y: auto;">
+    <span class="close-modal" onclick="closeCandidateRegisterModal()">&times;</span>
+    <h3>Complete Candidate Registration</h3>
+    <form id="candidateRegisterForm" enctype="multipart/form-data">
+      <!-- Personal Information -->
+      <h4 style="margin: 15px 0 10px 0;">Personal Information</h4>
+      <div class="form-group"><input type="text" id="candName" placeholder="Full Name *" required></div>
+      <div class="form-group"><input type="email" id="candEmail" placeholder="Email *" required></div>
+      <div class="form-group"><input type="password" id="candPassword" placeholder="Password *" required></div>
+      <div class="form-group"><input type="date" id="candDob" placeholder="Date of Birth"></div>
+      <div class="form-group"><input type="tel" id="candPhone" placeholder="Phone Number *" required></div>
+      <div class="form-group"><input type="tel" id="candAlternatePhone" placeholder="Alternate Phone Number"></div>
+      <div class="form-group">
+        <select id="candGender">
+          <option value="">Select Gender</option><option>Male</option><option>Female</option><option>Other</option>
+        </select>
+      </div>
+      
+      <!-- Location Details -->
+      <h4 style="margin: 15px 0 10px 0;">Location Details</h4>
+      <div class="form-group"><input type="text" id="candCurrentLocation" placeholder="Current Location (City)"></div>
+      <div class="form-group"><input type="text" id="candCity" placeholder="City"></div>
+      <div class="form-group"><input type="text" id="candState" placeholder="State"></div>
+      <div class="form-group"><input type="text" id="candPincode" placeholder="Pincode"></div>
+      <div class="form-group"><textarea id="candPermanentAddress" placeholder="Permanent Address" rows="2"></textarea></div>
+      
+      <!-- Professional Details -->
+      <h4 style="margin: 15px 0 10px 0;">Professional Details</h4>
+      <div class="form-group"><input type="text" id="candQualification" placeholder="Highest Qualification"></div>
+      <div class="form-group"><input type="text" id="candTotalExperience" placeholder="Total Experience (in years)"></div>
+      <div class="form-group"><input type="text" id="candCurrentSalary" placeholder="Current Salary (LPA)"></div>
+      <div class="form-group"><input type="text" id="candExpectedSalary" placeholder="Expected Salary (LPA)"></div>
+      <div class="form-group"><input type="text" id="candNoticePeriod" placeholder="Notice Period (days)"></div>
+      <div class="form-group"><input type="text" id="candCurrentCompany" placeholder="Current Company Name"></div>
+      <div class="form-group"><textarea id="candPreviousCompanies" placeholder="Previous Companies (comma separated)" rows="2"></textarea></div>
+      <div class="form-group"><textarea id="candKeySkills" placeholder="Key Skills (comma separated)" rows="2"></textarea></div>
+      
+      <!-- Resume Upload -->
+      <h4 style="margin: 15px 0 10px 0;">Resume Upload</h4>
+      <div class="form-group">
+        <input type="file" id="candResume" accept=".pdf,.doc,.docx">
+        <small>Allowed: PDF, DOC, DOCX (Max 5MB)</small>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">Register as Candidate</button>
+    </form>
+  </div>
+</div>
+
+<script>
+// Candidate Register Function
+async function registerCandidate(formData) {
+  try {
+    const response = await fetch('/api/candidate/register', {
+      method: 'POST',
+      body: formData
+    });
+    const data = await response.json();
+    if (response.ok) {
+      alert('Registration successful! Please login.');
+      closeCandidateRegisterModal();
+      showLoginModal();
+    } else {
+      alert('Registration failed: ' + data.error);
+    }
+  } catch (error) {
+    alert('Error: ' + error.message);
+  }
+}
+
+document.getElementById('candidateRegisterForm')?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const formData = new FormData();
+  formData.append('name', document.getElementById('candName').value);
+  formData.append('email', document.getElementById('candEmail').value);
+  formData.append('password', document.getElementById('candPassword').value);
+  formData.append('dob', document.getElementById('candDob').value);
+  formData.append('phone', document.getElementById('candPhone').value);
+  formData.append('alternatePhone', document.getElementById('candAlternatePhone').value);
+  formData.append('gender', document.getElementById('candGender').value);
+  formData.append('currentLocation', document.getElementById('candCurrentLocation').value);
+  formData.append('city', document.getElementById('candCity').value);
+  formData.append('state', document.getElementById('candState').value);
+  formData.append('pincode', document.getElementById('candPincode').value);
+  formData.append('permanentAddress', document.getElementById('candPermanentAddress').value);
+  formData.append('qualification', document.getElementById('candQualification').value);
+  formData.append('totalExperience', document.getElementById('candTotalExperience').value);
+  formData.append('currentSalary', document.getElementById('candCurrentSalary').value);
+  formData.append('expectedSalary', document.getElementById('candExpectedSalary').value);
+  formData.append('noticePeriod', document.getElementById('candNoticePeriod').value);
+  formData.append('currentCompany', document.getElementById('candCurrentCompany').value);
+  formData.append('previousCompanies', document.getElementById('candPreviousCompanies').value);
+  formData.append('keySkills', document.getElementById('candKeySkills').value);
+  const resumeFile = document.getElementById('candResume').files[0];
+  if (resumeFile) formData.append('resume', resumeFile);
+  
+  registerCandidate(formData);
+});
+
+function showCandidateRegister() {
+  closeLoginModal();
+  document.getElementById('candidateRegisterModal').style.display = 'flex';
+}
+
+function closeCandidateRegisterModal() {
+  document.getElementById('candidateRegisterModal').style.display = 'none';
+}
+</script>
 </body>
 </html>
