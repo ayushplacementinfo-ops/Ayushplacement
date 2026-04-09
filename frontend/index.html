@@ -40,6 +40,23 @@
     .role-tab { flex: 1; padding: 10px; background: #e2e8f0; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; }
     .role-tab.active { background: var(--primary); color: white; }
     footer { background: var(--dark); color: #94a3b8; padding: 2rem; text-align: center; margin-top: 3rem; }
+    
+    /* Profile Section Styles */
+    .profile-section { background: white; border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .profile-section h3 { color: var(--primary); margin-bottom: 15px; border-bottom: 2px solid var(--secondary); padding-bottom: 10px; }
+    .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+    .profile-field { margin-bottom: 10px; }
+    .profile-field label { font-weight: 600; color: #666; display: block; font-size: 0.85rem; }
+    .profile-field .value { color: #333; margin-top: 4px; }
+    .edit-btn { background: var(--secondary); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+    .application-card { background: #f8fafc; border-radius: 12px; padding: 15px; margin-bottom: 15px; border-left: 4px solid var(--secondary); }
+    .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-reviewed { background: #dbeafe; color: #1e40af; }
+    .status-shortlisted { background: #dcfce7; color: #166534; }
+    .status-rejected { background: #fee2e2; color: #991b1b; }
+    .download-resume { background: var(--primary); color: white; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 0.8rem; display: inline-block; }
+    
     @media (max-width: 768px) { .header-top { flex-direction: column; text-align: center; } .hero { padding: 1.5rem; } }
   </style>
 </head>
@@ -197,7 +214,7 @@ async function handleLogin() {
       currentUser = data.user;
       alert(`Welcome ${data.user.name}!`);
       closeLoginModal();
-      loadPage('home');
+      loadPage('dashboard');
     } else {
       alert('Login failed: ' + (data.error || 'Invalid credentials'));
     }
@@ -276,10 +293,99 @@ document.getElementById('employerRegisterForm')?.addEventListener('submit', asyn
   }
 });
 
+// Edit Profile Functions
+async function showEditProfile() {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_URL}/candidate/profile`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  const profile = await response.json();
+  
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.style.display = 'flex';
+  modal.innerHTML = `
+    <div class="modal-content" style="max-width: 800px; max-height: 80vh; overflow-y: auto;">
+      <span onclick="this.parentElement.parentElement.remove()" style="float:right; font-size:28px; cursor:pointer">&times;</span>
+      <h3 style="margin-bottom:20px">Edit Profile</h3>
+      <form id="editProfileForm" enctype="multipart/form-data">
+        <div class="form-group"><input type="text" id="editName" value="${profile.name || ''}" placeholder="Full Name"></div>
+        <div class="form-group"><input type="tel" id="editPhone" value="${profile.phone || ''}" placeholder="Phone Number"></div>
+        <div class="form-group"><input type="date" id="editDob" value="${profile.dob || ''}" placeholder="Date of Birth"></div>
+        <div class="form-group"><input type="text" id="editCurrentLocation" value="${profile.currentLocation || ''}" placeholder="Current Location"></div>
+        <div class="form-group"><input type="text" id="editQualification" value="${profile.qualification || ''}" placeholder="Highest Qualification"></div>
+        <div class="form-group"><input type="text" id="editTotalExperience" value="${profile.totalExperience || ''}" placeholder="Total Experience (years)"></div>
+        <div class="form-group"><input type="text" id="editCurrentSalary" value="${profile.currentSalary || ''}" placeholder="Current Salary (LPA)"></div>
+        <div class="form-group"><input type="text" id="editExpectedSalary" value="${profile.expectedSalary || ''}" placeholder="Expected Salary (LPA)"></div>
+        <div class="form-group"><input type="text" id="editCurrentCompany" value="${profile.currentCompany || ''}" placeholder="Current Company"></div>
+        <div class="form-group"><textarea id="editKeySkills" placeholder="Key Skills (comma separated)" rows="2">${profile.keySkills || ''}</textarea></div>
+        <div class="form-group">
+          <input type="file" id="editResume" accept=".pdf,.doc,.docx">
+          <small>Upload new resume (optional)</small>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%">Update Profile</button>
+      </form>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  
+  document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('name', document.getElementById('editName').value);
+    formData.append('phone', document.getElementById('editPhone').value);
+    formData.append('dob', document.getElementById('editDob').value);
+    formData.append('currentLocation', document.getElementById('editCurrentLocation').value);
+    formData.append('qualification', document.getElementById('editQualification').value);
+    formData.append('totalExperience', document.getElementById('editTotalExperience').value);
+    formData.append('currentSalary', document.getElementById('editCurrentSalary').value);
+    formData.append('expectedSalary', document.getElementById('editExpectedSalary').value);
+    formData.append('currentCompany', document.getElementById('editCurrentCompany').value);
+    formData.append('keySkills', document.getElementById('editKeySkills').value);
+    
+    const resumeFile = document.getElementById('editResume').files[0];
+    if (resumeFile) formData.append('resume', resumeFile);
+    
+    const updateResponse = await fetch(`${API_URL}/candidate/profile`, {
+      method: 'PUT',
+      headers: { 'Authorization': `Bearer ${token}` },
+      body: formData
+    });
+    
+    if (updateResponse.ok) {
+      alert('Profile updated successfully!');
+      modal.remove();
+      loadPage('dashboard');
+    } else {
+      alert('Update failed');
+    }
+  });
+}
+
+async function updateApplicationStatus(applicationId, status) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(`${API_URL}/applications/${applicationId}/status`, {
+    method: 'PUT',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` 
+    },
+    body: JSON.stringify({ status })
+  });
+  
+  if (response.ok) {
+    alert('Application status updated!');
+    loadPage('dashboard');
+  } else {
+    alert('Update failed');
+  }
+}
+
 // Load pages
 async function loadPage(page) {
   currentPage = page;
   const app = document.getElementById('app');
+  const token = localStorage.getItem('token');
   
   if (page === 'home') {
     const jobs = await fetchJobs();
@@ -303,6 +409,7 @@ async function loadPage(page) {
       <div class="job-grid" id="jobsList"></div>
     `;
     displayJobs(jobs);
+    
   } else if (page === 'jobs') {
     const jobs = await fetchJobs();
     app.innerHTML = `
@@ -315,6 +422,7 @@ async function loadPage(page) {
       <div class="job-grid" id="jobsList"></div>
     `;
     displayJobs(jobs);
+    
   } else if (page === 'postJob') {
     if (!currentUser || (currentUser.role !== 'employer' && currentUser.role !== 'admin')) {
       app.innerHTML = `<div class="hero"><h3>Please login as Employer to post jobs</h3><button class="btn btn-primary" onclick="showLoginModal()">Login</button></div>`;
@@ -336,7 +444,6 @@ async function loadPage(page) {
     `;
     document.getElementById('postJobForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const token = localStorage.getItem('token');
       const jobData = {
         title: document.getElementById('jobTitle').value,
         company: document.getElementById('jobCompany').value,
@@ -353,12 +460,127 @@ async function loadPage(page) {
       if (response.ok) alert('Job posted!'); else alert('Failed');
       loadPage('jobs');
     });
+    
   } else if (page === 'dashboard') {
     if (!currentUser) {
       app.innerHTML = `<div class="hero"><h3>Please login to view dashboard</h3><button class="btn btn-primary" onclick="showLoginModal()">Login</button></div>`;
       return;
     }
-    app.innerHTML = `<div class="hero"><h3>Welcome ${currentUser.name}</h3><p>Role: ${currentUser.role}</p><button class="btn btn-primary" onclick="logout()">Logout</button></div>`;
+    
+    // Candidate Dashboard
+    if (currentUser.role === 'candidate') {
+      try {
+        const profileResponse = await fetch(`${API_URL}/candidate/profile`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const profile = await profileResponse.json();
+        
+        const applicationsResponse = await fetch(`${API_URL}/applications/my`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const applications = await applicationsResponse.json();
+        
+        app.innerHTML = `
+          <div class="profile-section">
+            <h3><i class="fas fa-user-circle"></i> My Profile</h3>
+            <div class="profile-grid">
+              <div class="profile-field"><label>Full Name</label><div class="value">${profile.name || '-'}</div></div>
+              <div class="profile-field"><label>Email</label><div class="value">${profile.email || '-'}</div></div>
+              <div class="profile-field"><label>Phone</label><div class="value">${profile.phone || '-'}</div></div>
+              <div class="profile-field"><label>Date of Birth</label><div class="value">${profile.dob || '-'}</div></div>
+              <div class="profile-field"><label>Current Location</label><div class="value">${profile.currentLocation || '-'}</div></div>
+              <div class="profile-field"><label>Qualification</label><div class="value">${profile.qualification || '-'}</div></div>
+              <div class="profile-field"><label>Total Experience</label><div class="value">${profile.totalExperience || '0'} years</div></div>
+              <div class="profile-field"><label>Current Salary</label><div class="value">${profile.currentSalary || '-'} LPA</div></div>
+              <div class="profile-field"><label>Expected Salary</label><div class="value">${profile.expectedSalary || '-'} LPA</div></div>
+              <div class="profile-field"><label>Current Company</label><div class="value">${profile.currentCompany || '-'}</div></div>
+              <div class="profile-field"><label>Key Skills</label><div class="value">${profile.keySkills || '-'}</div></div>
+              ${profile.resumePath ? `<div class="profile-field"><label>Resume</label><div class="value"><a href="/${profile.resumePath}" class="download-resume" download><i class="fas fa-download"></i> Download Resume</a></div></div>` : ''}
+            </div>
+            <button class="edit-btn" onclick="showEditProfile()"><i class="fas fa-edit"></i> Edit Profile</button>
+          </div>
+          
+          <div class="profile-section">
+            <h3><i class="fas fa-briefcase"></i> My Applications (${applications.length})</h3>
+            ${applications.length === 0 ? '<p>No applications yet. Browse jobs and apply!</p>' : applications.map(app => `
+              <div class="application-card">
+                <h4>${app.jobId?.title || 'Job'}</h4>
+                <p><strong>Company:</strong> ${app.jobId?.company || 'N/A'}</p>
+                <p><strong>Location:</strong> ${app.jobId?.location || 'N/A'}</p>
+                <p><strong>Applied on:</strong> ${new Date(app.appliedDate).toLocaleDateString()}</p>
+                <p><strong>Status:</strong> <span class="status-badge status-${app.status}">${app.status.toUpperCase()}</span></p>
+              </div>
+            `).join('')}
+          </div>
+          
+          <button class="btn btn-primary" onclick="logout()" style="margin-top: 20px;">Logout</button>
+        `;
+      } catch (error) {
+        app.innerHTML = `<div class="hero"><p>Error loading profile: ${error.message}</p></div>`;
+      }
+      
+    // Employer Dashboard  
+    } else if (currentUser.role === 'employer') {
+      try {
+        const applicationsResponse = await fetch(`${API_URL}/employer/applications`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const applications = await applicationsResponse.json();
+        
+        app.innerHTML = `
+          <div class="profile-section">
+            <h3><i class="fas fa-building"></i> Employer Dashboard</h3>
+            <div class="profile-grid">
+              <div class="profile-field"><label>Name</label><div class="value">${currentUser.name}</div></div>
+              <div class="profile-field"><label>Email</label><div class="value">${currentUser.email}</div></div>
+            </div>
+          </div>
+          
+          <div class="profile-section">
+            <h3><i class="fas fa-users"></i> Received Applications (${applications.length})</h3>
+            ${applications.length === 0 ? '<p>No applications received yet.</p>' : applications.map(app => `
+              <div class="application-card">
+                <h4>${app.jobId?.title} - ${app.jobId?.company}</h4>
+                <p><strong>Candidate:</strong> ${app.candidateDetails?.name || 'N/A'}</p>
+                <p><strong>Email:</strong> ${app.candidateDetails?.email || 'N/A'}</p>
+                <p><strong>Phone:</strong> ${app.candidateDetails?.phone || 'N/A'}</p>
+                <p><strong>Experience:</strong> ${app.candidateDetails?.totalExperience || '0'} years</p>
+                <p><strong>Current Salary:</strong> ${app.candidateDetails?.currentSalary || 'N/A'} LPA</p>
+                <p><strong>Expected Salary:</strong> ${app.candidateDetails?.expectedSalary || 'N/A'} LPA</p>
+                <p><strong>Skills:</strong> ${app.candidateDetails?.keySkills || 'N/A'}</p>
+                <p><strong>Qualification:</strong> ${app.candidateDetails?.qualification || 'N/A'}</p>
+                <p><strong>Current Location:</strong> ${app.candidateDetails?.currentLocation || 'N/A'}</p>
+                ${app.candidateDetails?.resumePath ? `<p><a href="/${app.candidateDetails.resumePath}" class="download-resume" download><i class="fas fa-download"></i> Download Resume</a></p>` : ''}
+                <div style="margin-top: 10px;">
+                  <label>Update Status:</label>
+                  <select onchange="updateApplicationStatus('${app._id}', this.value)" style="margin-left: 10px; padding: 5px;">
+                    <option value="pending" ${app.status === 'pending' ? 'selected' : ''}>Pending</option>
+                    <option value="reviewed" ${app.status === 'reviewed' ? 'selected' : ''}>Reviewed</option>
+                    <option value="shortlisted" ${app.status === 'shortlisted' ? 'selected' : ''}>Shortlisted</option>
+                    <option value="rejected" ${app.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                  </select>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          
+          <button class="btn btn-primary" onclick="logout()">Logout</button>
+        `;
+      } catch (error) {
+        app.innerHTML = `<div class="hero"><p>Error: ${error.message}</p></div>`;
+      }
+      
+    // Admin Dashboard
+    } else if (currentUser.role === 'admin') {
+      app.innerHTML = `
+        <div class="profile-section">
+          <h3><i class="fas fa-crown"></i> Admin Dashboard</h3>
+          <p>Welcome Admin! You have full access to all data.</p>
+          <button class="btn btn-primary" onclick="logout()">Logout</button>
+        </div>
+      `;
+    }
+    
   } else if (page === 'contact') {
     app.innerHTML = `<div class="hero"><h3>Contact Us</h3><p><i class="fas fa-phone"></i> <strong>Phone:</strong> 9356099943</p><p><i class="fas fa-envelope"></i> <strong>Email:</strong> ayushplacementinfo@gmail.com</p><p><i class="fas fa-map-marker"></i> <strong>Address:</strong> Mumbai, India</p></div>`;
   }
