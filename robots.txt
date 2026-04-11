@@ -1,0 +1,18 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Block admin/private areas
+Disallow: /admin/
+Disallow: /private/
+Disallow: /temp/
+Disallow: /backend/
+
+# Specify sitemap location
+Sitemap: https://ayushplacement.online/sitemap.xml
+
+# Crawl delay (be gentle to your server)
+Crawl-delay: 1
+
+# Specify host
+Host: https://ayushplacement.online
