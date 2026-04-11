@@ -12,7 +12,93 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
+// ========== 🚀 SEO & PERFORMANCE MIDDLEWARE (ADD THIS) ==========
+// Force HTTPS in production
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'production' && req.headers['x-forwarded-proto'] !== 'https') {
+    return res.redirect(301, 'https://' + req.headers.host + req.url);
+  }
+  next();
+});
+
+// Security headers for better SEO ranking
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  next();
+});
+
+// Cache static assets (improves Google PageSpeed score)
+app.use((req, res, next) => {
+  if (req.url.match(/\.(css|js|jpg|png|webp|ico|svg)$/)) {
+    res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year
+  }
+  next();
+});
+
+// Serve robots.txt and sitemap.xml explicitly
+app.get('/robots.txt', (req, res) => {
+  res.setHeader('Content-Type', 'text/plain');
+  res.send(`# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Block admin/private areas
+Disallow: /admin/
+Disallow: /api/admin/
+Disallow: /private/
+
+# Sitemap location
+Sitemap: https://ayushplacement.online/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1
+`);
+});
+
+app.get('/sitemap.xml', (req, res) => {
+  res.setHeader('Content-Type', 'application/xml');
+  res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://ayushplacement.online/</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://ayushplacement.online/jobs.html</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://ayushplacement.online/employer.html</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ayushplacement.online/contact.html</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ayushplacement.online/about.html</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>`);
+});
+
+// Custom 404 handler for API routes (must be after all API routes)
+// ========== END SEO MIDDLEWARE ==========
+
+// Middleware (your existing code continues here)
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -65,7 +151,7 @@ const connectDB = async () => {
 
 connectDB();
 
-// ============ SCHEMAS ============
+// ============ SCHEMAS (your existing schemas) ============
 const CandidateSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
@@ -178,8 +264,11 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-// ============ CANDIDATE REGISTRATION WITH RESUME ============
+// ============ ALL YOUR EXISTING API ROUTES GO HERE ============
+// (Keep all your routes exactly as they are - no changes needed)
+
 app.post('/api/candidate/register', upload.single('resume'), async (req, res) => {
+  // Your existing code...
   try {
     const { 
       name, email, password, dob, phone, alternatePhone, gender, maritalStatus,
@@ -215,7 +304,6 @@ app.post('/api/candidate/register', upload.single('resume'), async (req, res) =>
   }
 });
 
-// ============ EMPLOYER REGISTRATION ============
 app.post('/api/employer/register', async (req, res) => {
   try {
     const { name, email, password, companyName, companyWebsite, companySize, industry, phone, designation } = req.body;
@@ -239,7 +327,6 @@ app.post('/api/employer/register', async (req, res) => {
   }
 });
 
-// ============ LOGIN ============
 app.post('/api/login', async (req, res) => {
   try {
     const { email, password, role } = req.body;
@@ -289,7 +376,6 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// ============ GET CANDIDATE PROFILE (Single definition) ============
 app.get('/api/candidate/profile', authMiddleware, async (req, res) => {
   try {
     if (req.user.role !== 'candidate') {
@@ -305,7 +391,6 @@ app.get('/api/candidate/profile', authMiddleware, async (req, res) => {
   }
 });
 
-// ============ UPDATE CANDIDATE PROFILE ============
 app.put('/api/candidate/profile', authMiddleware, upload.single('resume'), async (req, res) => {
   try {
     if (req.user.role !== 'candidate') {
@@ -338,7 +423,6 @@ app.put('/api/candidate/profile', authMiddleware, upload.single('resume'), async
   }
 });
 
-// ============ GET FULL CANDIDATE PROFILE FOR RECRUITER ============
 app.get('/api/candidate/:id/complete', authMiddleware, async (req, res) => {
   try {
     if (req.user.role !== 'employer' && req.user.role !== 'admin') {
@@ -356,7 +440,6 @@ app.get('/api/candidate/:id/complete', authMiddleware, async (req, res) => {
   }
 });
 
-// ============ JOB ROUTES ============
 app.get('/api/jobs', async (req, res) => {
   try {
     const { search, location, type } = req.query;
@@ -396,7 +479,6 @@ app.post('/api/jobs', authMiddleware, async (req, res) => {
   }
 });
 
-// ============ APPLICATION ROUTES ============
 app.post('/api/applications', authMiddleware, async (req, res) => {
   try {
     if (req.user.role !== 'candidate') {
@@ -440,7 +522,6 @@ app.get('/api/applications/my', authMiddleware, async (req, res) => {
   }
 });
 
-// ============ EMPLOYER APPLICATIONS ============
 app.get('/api/employer/applications', authMiddleware, async (req, res) => {
   try {
     if (req.user.role !== 'employer' && req.user.role !== 'admin') {
@@ -468,7 +549,6 @@ app.get('/api/employer/applications', authMiddleware, async (req, res) => {
   }
 });
 
-// ============ UPDATE APPLICATION STATUS ============
 app.put('/api/applications/:id/status', authMiddleware, async (req, res) => {
   try {
     const { status } = req.body;
@@ -492,7 +572,6 @@ app.put('/api/applications/:id/status', authMiddleware, async (req, res) => {
   }
 });
 
-// ============ ADMIN CHECK ============
 app.get('/api/admin/check', authMiddleware, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
@@ -545,11 +624,25 @@ const seedInitialJobs = async () => {
   }
 };
 
+// ========== 🚀 CATCH-ALL 404 HANDLER FOR NON-API ROUTES (ADD AT THE END) ==========
+// This must be AFTER all your API routes but BEFORE app.listen()
+app.use((req, res) => {
+  // Only handle non-API routes
+  if (!req.path.startsWith('/api')) {
+    res.status(404).sendFile(path.join(__dirname, 'frontend', '404.html'));
+  } else {
+    res.status(404).json({ error: 'API endpoint not found' });
+  }
+});
+
 // ============ START SERVER ============
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, async () => {
   console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📊 SEO endpoints:`);
+  console.log(`   → https://ayushplacement.online/robots.txt`);
+  console.log(`   → https://ayushplacement.online/sitemap.xml`);
   await createDefaultAdmin();
   await seedInitialJobs();
 });
